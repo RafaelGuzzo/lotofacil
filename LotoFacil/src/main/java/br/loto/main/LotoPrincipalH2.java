@@ -30,7 +30,7 @@ public class LotoPrincipalH2 {
 
 		LotoCrudUtil util = new LotoCrudUtil();
 		int ulConBD = util.ultimoConcurso(); // ultimo concurso do banco
-		int numConc = 1;//retornaUltimoConcurso(); // ultimo concurso localizado no site
+		int numConc =  retornaUltimoConcurso(); // ultimo concurso localizado no site
 
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		if (ulConBD == 1) {
@@ -39,7 +39,7 @@ public class LotoPrincipalH2 {
 			ulConBD += 1;
 		}
 
-		System.out.println("Ultimo concurso do banco = " + ulConBD + 
+		System.out.println("Ultimo concurso do banco = " + (ulConBD-1) + 
 				" ultimo concurso encontrado no site = " + numConc);
 
 		for (int i = ulConBD; i <= numConc; i++) {
@@ -50,23 +50,26 @@ public class LotoPrincipalH2 {
 
 			} catch (IOException e) {
 				e.printStackTrace();
+
 			}
 			System.out.println("i = " + i);
 		}
 
-		session.close();
+		
 
-		List<Concurso> todosConc = util.todosConcursos();
+		/*List<Concurso> todosConc = util.todosConcursos();
 		for (Concurso concurso : todosConc) {
 			System.out.println(concurso);
-		}
+		}*/
 		System.out.println("finalizado");
+		session.close();
+		HibernateUtil.finalizar();
 
 	}
 
 	private static void repete(int numConc, Session session) throws IOException {
 
-		site = Jsoup.connect("https://www.netsorte.com.br/lotofacil/" + numConc + "#APLICATIVO").get();
+		site = Jsoup.connect("https://www.netsorte.com.br/lotofacil/" + numConc + "#APLICATIVO").timeout(30*1000).get();
 
 		numeros = site.select("div[id=resultado1]");
 
@@ -83,7 +86,12 @@ public class LotoPrincipalH2 {
 		ArrayList<String> dezenas = new ArrayList<String>();
 
 		for (Element el : a) {
-			dezenas.add(el.text().trim());
+			if(Integer.parseInt(el.text().trim()) <= 9) {
+				dezenas.add("0"+el.text().trim());
+			}else {
+				dezenas.add(el.text().trim());
+			}
+			
 		}
 		concurso.setDezenas(dezenas);
 		session.beginTransaction();
@@ -101,7 +109,7 @@ public class LotoPrincipalH2 {
 		String numConcurso = "";
 
 		try {
-			doc = Jsoup.connect("https://www.netsorte.com.br/lotofacil").get();
+			doc = Jsoup.connect("https://www.netsorte.com.br/lotofacil").timeout(30*1000).get();
 			Elements a = doc.select("div[id=labelNumeroConcurso]");
 
 			numConcurso = a.text().trim();
