@@ -38,4 +38,17 @@ public class LotoCrudUtil {
 		return lista;
 
 	}
+	
+	public List<Concurso> existeConcurso() {
+		String a = "01,02,03,05,06,07,09,13,14,16,17,18,19,20,21";
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		List<Concurso> lista = session.createQuery("from Concurso where dezenas ="+"\'"+a+"\'").list();
+
+		session.close();
+
+		// HibernateUtil.finalizar();
+
+		return lista;
+
+	}
 }

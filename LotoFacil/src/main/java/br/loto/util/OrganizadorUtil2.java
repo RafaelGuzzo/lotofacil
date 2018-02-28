@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import br.loto.domain.Aposta;
 import br.loto.domain.Concurso;
 
 public class OrganizadorUtil2 {
@@ -24,9 +25,14 @@ public class OrganizadorUtil2 {
 			String frutas[];
 
 			while (br.ready()) {
+				int qtdPar = 0;
+				int qtdImpar = 0;
+				int qtdPrimo = 0;
 
-				// Concurso concurso = new Concurso();
+				Aposta aposta = new Aposta();
+
 				ArrayList<Integer> dezenas = new ArrayList<Integer>();
+				ArrayList<String> temp = new ArrayList<String>();
 
 				// concurso.setId(null);
 				// concurso.setNumConcurso(null);
@@ -36,21 +42,37 @@ public class OrganizadorUtil2 {
 
 				// System.out.println(linha);
 				for (String string : frutas) {
-					dezenas.add(Integer.parseInt(string));
-					//System.out.println(Integer.parseInt(string));
+					int num = Integer.parseInt(string);
+					dezenas.add(num);
+					temp.add(string);
+					if (parImpar(num)) {
+						qtdPar++;
+					} else {
+						qtdImpar++;
+					}
 				}
-
+				
+				Collections.sort(temp);
 				Collections.sort(dezenas);
-
-				System.out.println(dezenas.get(5));
+				
+				
+				System.out.println(temp);
+				System.out.println(dezenas + "pares " + qtdPar + "impares " + qtdImpar);
 				System.out.println("--------------------------");
-
 
 			}
 
-
 		} catch (IOException e1) {
 			e1.printStackTrace();
+		}
+
+	}
+
+	public static boolean parImpar(int num) {
+		if (num % 2 == 0) {
+			return true;
+		} else {
+			return false;
 		}
 
 	}

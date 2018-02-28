@@ -54,6 +54,8 @@ public class LotoPrincipalH2 {
 			}
 			System.out.println("i = " + i);
 		}
+		
+		System.out.println(util.existeConcurso());
 
 		
 
