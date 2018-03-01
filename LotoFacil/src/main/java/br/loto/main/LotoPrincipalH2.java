@@ -30,7 +30,7 @@ public class LotoPrincipalH2 {
 
 		LotoCrudUtil util = new LotoCrudUtil();
 		int ulConBD = util.ultimoConcurso(); // ultimo concurso do banco
-		int numConc =  retornaUltimoConcurso(); // ultimo concurso localizado no site
+		int numConc = retornaUltimoConcurso(); // ultimo concurso localizado no site
 
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		if (ulConBD == 1) {
@@ -39,8 +39,8 @@ public class LotoPrincipalH2 {
 			ulConBD += 1;
 		}
 
-		System.out.println("Ultimo concurso do banco = " + (ulConBD-1) + 
-				" ultimo concurso encontrado no site = " + numConc);
+		System.out.println(
+				"Ultimo concurso do banco = " + (ulConBD - 1) + " ultimo concurso encontrado no site = " + numConc);
 
 		for (int i = ulConBD; i <= numConc; i++) {
 
@@ -54,15 +54,13 @@ public class LotoPrincipalH2 {
 			}
 			System.out.println("i = " + i);
 		}
-		
-		System.out.println(util.existeConcurso());
 
 		
 
-		/*List<Concurso> todosConc = util.todosConcursos();
-		for (Concurso concurso : todosConc) {
-			System.out.println(concurso);
-		}*/
+		/*
+		 * List<Concurso> todosConc = util.todosConcursos(); for (Concurso concurso :
+		 * todosConc) { System.out.println(concurso); }
+		 */
 		System.out.println("finalizado");
 		session.close();
 		HibernateUtil.finalizar();
@@ -71,7 +69,8 @@ public class LotoPrincipalH2 {
 
 	private static void repete(int numConc, Session session) throws IOException {
 
-		site = Jsoup.connect("https://www.netsorte.com.br/lotofacil/" + numConc + "#APLICATIVO").timeout(30*1000).get();
+		site = Jsoup.connect("https://www.netsorte.com.br/lotofacil/" + numConc + "#APLICATIVO").timeout(30 * 1000)
+				.get();
 
 		numeros = site.select("div[id=resultado1]");
 
@@ -85,22 +84,33 @@ public class LotoPrincipalH2 {
 		concurso.setNumConcurso(numConc);
 		concurso.setId(numConc);
 
-		ArrayList<String> dezenas = new ArrayList<String>();
+		String dezenas = "";
+		int contador = 0;
 
 		for (Element el : a) {
-			if(Integer.parseInt(el.text().trim()) <= 9) {
-				dezenas.add("0"+el.text().trim());
-			}else {
-				dezenas.add(el.text().trim());
+			contador++;
+
+			if (Integer.parseInt(el.text().trim()) <= 9 && contador < 15) {
+				dezenas = dezenas + ("0" + el.text().trim() + ",");
+			} else if (contador < 15) {
+				dezenas = dezenas + (el.text().trim() + ",");
+			} else {
+				dezenas = dezenas + (el.text().trim());
 			}
-			
+
 		}
+
 		concurso.setDezenas(dezenas);
+		//System.out.println("String de dezenas " + dezenas);
 		session.beginTransaction();
+
 		String gravar = ("Inserido id " + concurso.getId() + " numCon " + concurso.getNumConcurso() + " dez "
 				+ concurso.getDezenas());
+
 		System.out.println(gravar);
+
 		escrever(path, gravar);
+
 		session.save(concurso);
 		session.getTransaction().commit();
 		// session.close();
@@ -111,7 +121,7 @@ public class LotoPrincipalH2 {
 		String numConcurso = "";
 
 		try {
-			doc = Jsoup.connect("https://www.netsorte.com.br/lotofacil").timeout(30*1000).get();
+			doc = Jsoup.connect("https://www.netsorte.com.br/lotofacil").timeout(30 * 1000).get();
 			Elements a = doc.select("div[id=labelNumeroConcurso]");
 
 			numConcurso = a.text().trim();

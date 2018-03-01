@@ -18,13 +18,13 @@ public class Concurso {
 
 	private int numConcurso;
 
-	private ArrayList<String> dezenas;
+	private String dezenas;
 
 	public Concurso() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Concurso(int id, int numConcurso, ArrayList<String> dezenas) {
+	public Concurso(int id, int numConcurso, String dezenas) {
 		super();
 		this.id = id;
 		this.numConcurso = numConcurso;
@@ -47,11 +47,11 @@ public class Concurso {
 		this.numConcurso = numConcurso;
 	}
 
-	public ArrayList<String> getDezenas() {
+	public String getDezenas() {
 		return dezenas;
 	}
 
-	public void setDezenas(ArrayList<String> dezenas) {
+	public void setDezenas(String dezenas) {
 		this.dezenas = dezenas;
 	}
 

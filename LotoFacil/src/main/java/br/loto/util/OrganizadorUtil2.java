@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+
+import org.jsoup.nodes.Element;
 
 import br.loto.domain.Aposta;
 import br.loto.domain.Concurso;
@@ -18,7 +21,7 @@ public class OrganizadorUtil2 {
 	}
 
 	public static void ler(String path) {
-
+		LotoCrudUtil util = new LotoCrudUtil();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
 
@@ -51,11 +54,11 @@ public class OrganizadorUtil2 {
 						qtdImpar++;
 					}
 				}
-				
+
 				Collections.sort(temp);
 				Collections.sort(dezenas);
-				
-				
+				localizarNoBanco(dezenas, util);
+
 				System.out.println(temp);
 				System.out.println(dezenas + "pares " + qtdPar + "impares " + qtdImpar);
 				System.out.println("--------------------------");
@@ -73,6 +76,35 @@ public class OrganizadorUtil2 {
 			return true;
 		} else {
 			return false;
+		}
+
+	}
+
+	public static void localizarNoBanco(ArrayList<Integer> dezenas, LotoCrudUtil util) {
+
+		String temp = "";
+		int contador = 0;
+
+		for (Integer dez : dezenas) {
+			contador++;
+
+			if (dez <= 9 && contador < 15) {
+				temp = temp + ("0" + dez + ",");
+			} else if (contador < 15) {
+				temp = temp + (dez + ",");
+			} else {
+				temp = temp + dez;
+			}
+
+		}
+
+		List<Concurso> lista = util.existeConcurso(temp);
+
+		if (lista.isEmpty()) {
+			System.out.println("Nao localizado no banco");
+		} else {
+			System.out.println(lista);
+
 		}
 
 	}
